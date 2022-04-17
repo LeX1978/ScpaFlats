@@ -4,7 +4,9 @@ from bs4 import BeautifulSoup
 
 Blocks = []
 pages = set()
-page_num = 1
+page_num = '1'
+pages.add(page_num)
+stop_flag = False
 
 # Установка соединения с сайтом
 def setConnection(page_num):
@@ -26,7 +28,7 @@ def setConnection(page_num):
 # Поцедура получения информации о квартирах на странице
 def getFlatInfo(soup):
     
-	# Находим все блоки с информацией о квартире
+# Находим все блоки с информацией о квартире
 	Blocks = soup.findAll("div", {'data-name': 'LinkArea'})
 	for block in Blocks:
 	# Определяем ссылку на конкретную квартиру
@@ -54,18 +56,31 @@ def getFlatInfo(soup):
 
 
 
-pages.add(str(page_num))
-while page_num not in pages:
-	resp = setConnection(str(page_num))
+while stop_flag is False:
+	resp = setConnection(page_num)
+	link = resp.url
 	soup = BeautifulSoup(resp.text, 'html.parser')
-	p_links = soup.find("a", {'class': '_93444fe79c--list-itemLink--BU9w6'})
+	p_links = soup.findAll("a", {'class': '_93444fe79c--list-itemLink--BU9w6'})
 	for p_link in p_links:
-		if 'href' in p_link.attrs:
-			next_link = p_link.attrs['href']
-		page_num = p_link.text
-		pages.add(page_num)
-		print(page_num)
-		print(next_link)
+		if p_link.text not in pages:
+			page_num = p_link.text
+			pages.add(page_num)
+			print(page_num)
+			break
+		elif p_link.text == '':
+			stop_flag = True
+		else:
+			break
+
+
+
+
+#	for p_link in p_links:
+#		next_link = p_link.get('href')
+#		page_num = p_link.text
+#		pages.add(page_num)
+#		print(page_num)
+#		print(next_link)
 
 
 
