@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 Pages = []
 page_list = set()
 url = "https://www.cian.ru/cat.php?currency=2&deal_type=sale&demolished_in_moscow_programm=0&engine_version=2&is_first_floor=0&maxprice=24000000&mintarea=80&object_type%5B0%5D=1&offer_type=flat&only_flat=1&p=1&region=1&room3=1"
+#url = "https://www.cian.ru/cat.php?currency=2&deal_type=sale&demolished_in_moscow_programm=0&engine_version=2&foot_min=45&is_first_floor=0&maxprice=24000000&metro%5B0%5D=379&mintarea=80&object_type%5B0%5D=1&offer_type=flat&only_flat=1&only_foot=2&room3=1"
 stop_flag = False
 
 # Установка соединения с сайтом
@@ -66,11 +67,9 @@ def getFlatInfo(url):
         # Ищем цену
         price_block = block.findAll("span", {'data-mark': 'MainPrice'})
         for price in price_block:
-            if cl == '':
-                price_num = price.find("span", {'class': cl})
-            else:
-                price_num = price.find("span", {'class': '_93444fe79c--highlighted--TzjBZ'}) _93444fe79c--highlighted--TzjBZ
-            print(price_num.text)
+            price_num = price.find("span")
+            flat_price = price_num.get_text()
+            print(flat_price)
 
 
 while stop_flag is False:
