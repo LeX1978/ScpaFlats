@@ -2,10 +2,8 @@ import requests
 from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
 
-Pages = []
 page_list = set()
 url = "https://www.cian.ru/cat.php?currency=2&deal_type=sale&demolished_in_moscow_programm=0&engine_version=2&is_first_floor=0&maxprice=24000000&mintarea=80&object_type%5B0%5D=1&offer_type=flat&only_flat=1&p=1&region=1&room3=1"
-#url = "https://www.cian.ru/cat.php?currency=2&deal_type=sale&demolished_in_moscow_programm=0&engine_version=2&foot_min=45&is_first_floor=0&maxprice=24000000&metro%5B0%5D=379&mintarea=80&object_type%5B0%5D=1&offer_type=flat&only_flat=1&only_foot=2&room3=1"
 stop_flag = False
 
 # Установка соединения с сайтом
@@ -24,10 +22,11 @@ def setConnection(url):
         return response
 
 def pageLinks(url):
+    link = ""
     resp = setConnection(url)
     soup = BeautifulSoup(resp.text, 'html.parser')
-    Pages = soup.findAll("a", {'class': '_93444fe79c--list-itemLink--BU9w6'})
-    for p_link in Pages:
+    pages = soup.findAll("a", {'class': '_93444fe79c--list-itemLink--BU9w6'})
+    for p_link in pages:
         page_num = p_link.text
         if 'href' in p_link.attrs:
             link = p_link.attrs['href']
