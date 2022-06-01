@@ -1,6 +1,7 @@
 import requests
 from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
+import re
 
 page_list = set()
 url = "https://www.cian.ru/cat.php?currency=2&deal_type=sale&demolished_in_moscow_programm=0&engine_version=2&is_first_floor=0&maxprice=24000000&mintarea=80&object_type%5B0%5D=1&offer_type=flat&only_flat=1&p=1&region=1&room3=1"
@@ -19,12 +20,12 @@ def setConnection(url):
     except Exception as err:
         print(f'Other error occured: {err}')
     else:
-        return response
+        soup = BeautifulSoup(response.text, 'html.parser')
+        return soup
 
-def pageLinks(url):
+#Процедура поиска ссылок на страницы
+def pageLinks(url,soup):
     link = ""
-    resp = setConnection(url)
-    soup = BeautifulSoup(resp.text, 'html.parser')
     pages = soup.findAll("a", {'class': '_93444fe79c--list-itemLink--BU9w6'})
     for p_link in pages:
         page_num = p_link.text
@@ -39,10 +40,7 @@ def pageLinks(url):
     return url
 
 # Поцедура получения информации о квартирах на странице
-def getFlatInfo(url):
-    cl = ''
-    resp = setConnection(url)
-    soup = BeautifulSoup(resp.text, 'html.parser')
+def getFlatInfo(soup):
     # Находим все блоки с информацией о квартире
     Blocks = soup.findAll("div", {'data-name': 'LinkArea'})
     for block in Blocks:
@@ -52,6 +50,9 @@ def getFlatInfo(url):
             if 'href' in linkflat.attrs:
                 link = linkflat.attrs['href']
                 print(link)
+                match = re.search(r'\d{9}', link)
+                flatID = match[0] if match else 0
+                print(flatID)
         # Ищем название ссылки
         link_spans = block.find("span", {'class': ''})
         link_text = link_spans.get_text().encode("utf8")
@@ -70,13 +71,21 @@ def getFlatInfo(url):
             flat_price = price_num.get_text()
             print(flat_price)
 
+################################################################################
+## Основная программа
+################################################################################
 
+#Собираем все ссылки на страницы квартир
 while stop_flag is False:
     if url not in page_list:
         page_list.add(url)
-        url = pageLinks(url)
+        bf = setConnection(url)
+        url = pageLinks(url,bf)
     else:
         stop_flag = True
 
+#Берем список линков и по каждой собираем инфу о квартире
 for link in page_list:
-    getFlatInfo(link)
+    print(link)
+    bf = setConnection(link)
+    getFlatInfo(bf)
