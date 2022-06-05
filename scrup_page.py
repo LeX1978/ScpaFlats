@@ -71,27 +71,27 @@ def getFlatInfo(soup):
         if linkflat is not None:
             if 'href' in linkflat.attrs:
                 link = linkflat.attrs['href']
- #               print(link)
+                print(link)
                 match = re.search(r'\d{9}', link)
                 flatID = match[0] if match else 0
- #               print(flatID)
+                print(flatID)
         # Ищем название ссылки
         link_spans = block.find("span", {'class': ''})
         link_text = link_spans.get_text().encode("utf8")
         link_text_decoded = link_text.decode('utf8')
-#        print(link_text_decoded)
+        print(link_text_decoded)
 
         # Ищем метро
         metro_block = block.findAll("a", {'class': '_93444fe79c--link--BwwJO'})
         for metro in metro_block:
             metro_name = metro.find("div", {'class': ''})
-#            print(metro_name.text)
+            print(metro_name.text)
         # Ищем цену
         price_block = block.findAll("span", {'data-mark': 'MainPrice'})
         for price in price_block:
             price_num = price.find("span")
             flat_price = price_num.get_text()
- #           print(flat_price)
+            print(flat_price)
 
 ################################################################################
 ## Основная программа
