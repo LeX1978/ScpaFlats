@@ -107,7 +107,6 @@ while stop_flag is False:
    if url not in page_list:
         page_list.add(url)
         bf = setConnection(url)
-        print(url)
         url = pageLinks(bf)
    else:
         stop_flag = True
