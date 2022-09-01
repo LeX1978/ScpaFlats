@@ -27,6 +27,7 @@ def collect_data():
        }
        session = get_session()
        response = session.get(url, proxies=proxies)
+       print("Let's begin rock !!!")
        print(url)
        soup = bs(response.text, 'html.parser')
        print(soup)
