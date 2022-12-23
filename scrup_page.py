@@ -34,6 +34,7 @@ def set_connection(page_url):
     session = get_session()
     try:
         response = session.get(page_url)
+        time.sleep(8)
         response.raise_for_status()
     except HTTPError as http_err:
         print(f'HTTP error occured: {http_err}')
