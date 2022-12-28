@@ -14,10 +14,15 @@ def get_session(url):
     EXE_PATH = r'C:\Work\python\chromedriver.exe'
     driver = webdriver.Chrome(executable_path=EXE_PATH)
     driver.get(url)
-    time.sleep(7)
-    driver.get(url)
+    # Проверка на страницу проверки
     response = driver.page_source
     soup = bs(response, 'html.parser')
+    flag = soup.findAll("div", {'class':'cf-browser-verification cf-im-under-attack'})
+    if flag is not None:
+        time.sleep(5)
+        driver.get(url)
+        response = driver.page_source
+        soup = bs(response, 'html.parser')
     print(url)
     return soup
 
