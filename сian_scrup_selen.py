@@ -3,10 +3,10 @@ import time
 from bs4 import BeautifulSoup as bs
 import re
 
-page_list = set()
 page_url = 'https://www.cian.ru/cat.php?currency=2&deal_type=sale&demolished_in_moscow_programm=0&engine_version=2' \
       '&is_first_floor=0&maxprice=24000000&mintarea=80&object_type%5B0%5D=1&offer_type=flat&only_flat=1&p=1&region=1' \
-      '&room3=1 '
+      '&room3=1' 
+page_list = set()
 stop_flag = False
 
 
@@ -14,16 +14,9 @@ def get_session(url):
     EXE_PATH = r'C:\Work\python\chromedriver.exe'
     driver = webdriver.Chrome(executable_path=EXE_PATH)
     driver.get(url)
-    # Проверка на страницу проверки
-    response = driver.page_source
-    soup = bs(response, 'html.parser')
-    flag = soup.findAll("div", {'class':'cf-browser-verification cf-im-under-attack'})
-    if flag is not None:
-        time.sleep(5)
-        driver.get(url)
-        response = driver.page_source
-        soup = bs(response, 'html.parser')
     print(url)
+    response = driver.page_source
+    soup = bs(response, 'html.parser')  
     return soup
 
 
@@ -82,7 +75,7 @@ def collect_data():
     global stop_flag
     global page_list
 
-    # Собираем все ссылки на страницы квартир
+    # 1. Ищем все ссылки на страницы
     while stop_flag is False:
         if page_url not in page_list:
             page_list.add(page_url)
@@ -90,11 +83,16 @@ def collect_data():
             page_url = page_links(bf)
         else:
             stop_flag = True
+    # 2. Запускаем потоки по страницам
+    # 3. Собираем информацию по сранице
+
+
+
 
     # Берем список линков и по каждой собираем инфу о квартире
-    for link in page_list:
-        bf = get_session(link)
-        get_flatinfo(bf)
+    #for link in page_list:
+    #    bf = get_session(link)
+    #    get_flatinfo(bf)
 
 def main():
     collect_data()
